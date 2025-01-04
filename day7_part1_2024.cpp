@@ -24,7 +24,7 @@ void day7_part1() {
     std::vector<Equation> vec;
     read_equations(vec);
     long long int result {0};
-    for (auto eq: vec) {
+    for (auto eq : vec) {
         if (eval_equation(eq)) {
             result += eq.test_value;
         }
