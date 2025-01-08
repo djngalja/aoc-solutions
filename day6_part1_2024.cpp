@@ -9,10 +9,10 @@ struct Position {
     int y;
 };
 
-void read_map(const std::string&, std::vector<std::string>&);
-Position find_guard(const std::vector<std::string>&);
+bool read_map(const std::string&, std::vector<std::vector<char>>&);
+Position find_guard(const std::vector<std::vector<char>>&);
 void turn_right(Position&);
-void move_guard(Position&, const std::vector<std::string>&, std::vector<std::vector<int>>&);
+void move_guard(Position&, const std::vector<std::vector<char>>&, std::vector<std::vector<int>>&);
 int count_distinct_pos(std::vector<std::vector<int>>&);
 void day6_part1();
 
@@ -24,23 +24,30 @@ int main() {
 
 
 void day6_part1() {
-    std::vector<std::string> vec;
-    read_map("advent_day6.txt", vec);
-    Position pos = find_guard(vec);
-    std::vector<std::vector<int>> visited;
-    move_guard(pos, vec, visited);
-    std::cout << "The guard will visit " << count_distinct_pos(visited) << " distinct positions.\n";
+    std::vector<std::vector<char>> vec;
+    if (read_map("advent_day6.txt", vec)) {
+        Position pos = find_guard(vec);
+        std::vector<std::vector<int>> visited;
+        move_guard(pos, vec, visited);
+        std::cout << "The guard will visit " << count_distinct_pos(visited) << " distinct positions.\n";
+    }
 }
 
-void read_map(const std::string& f_name, std::vector<std::string>& vec) {
+bool read_map(const std::string& f_name, std::vector<std::vector<char>>& vec) {
     std::ifstream file(f_name);
     if (!file) {
         std::cout << "File not found\n";
+        return false;
     }
     std::string temp_str;
     while (getline(file, temp_str)) {
-        vec.push_back(temp_str);
+        std::vector<char> temp_vec;
+        for (auto c : temp_str) {
+            temp_vec.push_back(c);
+        }
+        vec.push_back(temp_vec);
     }
+    return true;
 }
 
 void turn_right(Position& adj) {
@@ -57,7 +64,7 @@ void turn_right(Position& adj) {
     }
 }
 
-void move_guard(Position& pos, const std::vector<std::string>& vec, std::vector<std::vector<int>>& visited) {
+void move_guard(Position& pos, const std::vector<std::vector<char>>& vec, std::vector<std::vector<int>>& visited) {
     int x_max = vec.size();
     int y_max = vec[0].size();
     Position adj {-1, 0}; // >North
@@ -80,10 +87,10 @@ int count_distinct_pos(std::vector<std::vector<int>>& visited) {
 }
 
 
-Position find_guard(const std::vector<std::string>& vec) {
-    Position pos;
-    for (std::size_t i=0; i!=vec.size(); i++) {
-        for (std::size_t j=0; j!=vec[i].size(); j++) {
+Position find_guard(const std::vector<std::vector<char>>& vec) {
+    Position pos {0, 0};
+    for (std::size_t i=0; i!=vec.size(); ++i) {
+        for (std::size_t j=0; j!=vec[i].size(); ++j) {
             if (vec[i][j] == '^') {
                 pos.x = i;
                 pos.y = j;
