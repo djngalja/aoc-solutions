@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <set>
 
 struct Position {
     int x;
@@ -12,8 +13,7 @@ struct Position {
 bool read_map(const std::string&, std::vector<std::vector<char>>&);
 Position find_guard(const std::vector<std::vector<char>>&);
 void turn_right(Position&);
-void move_guard(Position&, const std::vector<std::vector<char>>&, std::vector<std::vector<int>>&);
-int count_distinct_pos(std::vector<std::vector<int>>&);
+void move_guard(Position&, const std::vector<std::vector<char>>&, std::set<std::vector<int>>&);
 void day6_part1();
 
 
@@ -25,11 +25,11 @@ int main() {
 
 void day6_part1() {
     std::vector<std::vector<char>> vec;
-    if (read_map("advent_day6.txt", vec)) {
+    if (read_map("input.txt", vec)) {
         Position pos = find_guard(vec);
-        std::vector<std::vector<int>> visited;
+        std::set<std::vector<int>> visited;
         move_guard(pos, vec, visited);
-        std::cout << "The guard will visit " << count_distinct_pos(visited) << " distinct positions.\n";
+        std::cout << "The guard will visit " << visited.size() << " distinct positions.\n";
     }
 }
 
@@ -64,7 +64,7 @@ void turn_right(Position& adj) {
     }
 }
 
-void move_guard(Position& pos, const std::vector<std::vector<char>>& vec, std::vector<std::vector<int>>& visited) {
+void move_guard(Position& pos, const std::vector<std::vector<char>>& vec, std::set<std::vector<int>>& visited) {
     int x_max = vec.size();
     int y_max = vec[0].size();
     Position adj {-1, 0}; // >North
@@ -73,19 +73,13 @@ void move_guard(Position& pos, const std::vector<std::vector<char>>& vec, std::v
         if (vec[pos.x + adj.x][pos.y + adj.y] == '#') {
             turn_right(adj);
         }
-        pos.x += adj.x;
-        pos.y += adj.y;
-        visited.push_back({pos.x, pos.y});
+        if (vec[pos.x + adj.x][pos.y + adj.y] != '#') {
+            pos.x += adj.x;
+            pos.y += adj.y;
+            visited.insert({pos.x, pos.y});
+        }
     }
 }
-
-int count_distinct_pos(std::vector<std::vector<int>>& visited) {
-    std::sort(visited.begin(), visited.end());
-    auto it = unique(visited.begin(), visited.end());
-    visited.erase(it, visited.end());
-    return visited.size();
-}
-
 
 Position find_guard(const std::vector<std::vector<char>>& vec) {
     Position pos {0, 0};
