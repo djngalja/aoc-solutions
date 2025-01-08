@@ -4,17 +4,16 @@
 #include <string>
 #include <algorithm>
 #include <set>
+#include <tuple>
 
-struct Position {
-    int x;
-    int y;
-};
+struct Position { int x; int y; };
+bool operator<(const Position& p1, const Position& p2);
 
+void day6_part1();
 bool read_map(const std::string&, std::vector<std::vector<char>>&);
 Position find_guard(const std::vector<std::vector<char>>&);
 void turn_right(Position&);
-void move_guard(Position&, const std::vector<std::vector<char>>&, std::set<std::vector<int>>&);
-void day6_part1();
+void move_guard(Position&, const std::vector<std::vector<char>>&, std::set<Position>&);
 
 
 int main() {
@@ -23,11 +22,15 @@ int main() {
 }
 
 
+bool operator<(const Position& p1, const Position& p2) {
+    return std::tie(p1.x, p1.y) < std::tie(p2.x, p2.y);
+}
+
 void day6_part1() {
     std::vector<std::vector<char>> vec;
     if (read_map("input.txt", vec)) {
         Position pos = find_guard(vec);
-        std::set<std::vector<int>> visited;
+        std::set<Position> visited;
         move_guard(pos, vec, visited);
         std::cout << "The guard will visit " << visited.size() << " distinct positions.\n";
     }
@@ -50,6 +53,20 @@ bool read_map(const std::string& f_name, std::vector<std::vector<char>>& vec) {
     return true;
 }
 
+Position find_guard(const std::vector<std::vector<char>>& vec) {
+    Position pos {0, 0};
+    for (std::size_t i=0; i!=vec.size(); ++i) {
+        for (std::size_t j=0; j!=vec[i].size(); ++j) {
+            if (vec[i][j] == '^') {
+                pos.x = i;
+                pos.y = j;
+                break;
+            }
+        }
+    }
+    return pos;
+}
+
 void turn_right(Position& adj) {
     if (adj.x == -1) { // >East
         adj = {0, 1};
@@ -64,7 +81,7 @@ void turn_right(Position& adj) {
     }
 }
 
-void move_guard(Position& pos, const std::vector<std::vector<char>>& vec, std::set<std::vector<int>>& visited) {
+void move_guard(Position& pos, const std::vector<std::vector<char>>& vec, std::set<Position>& visited) {
     int x_max = vec.size();
     int y_max = vec[0].size();
     Position adj {-1, 0}; // >North
@@ -76,21 +93,7 @@ void move_guard(Position& pos, const std::vector<std::vector<char>>& vec, std::s
         if (vec[pos.x + adj.x][pos.y + adj.y] != '#') {
             pos.x += adj.x;
             pos.y += adj.y;
-            visited.insert({pos.x, pos.y});
+            visited.insert(pos);
         }
     }
-}
-
-Position find_guard(const std::vector<std::vector<char>>& vec) {
-    Position pos {0, 0};
-    for (std::size_t i=0; i!=vec.size(); ++i) {
-        for (std::size_t j=0; j!=vec[i].size(); ++j) {
-            if (vec[i][j] == '^') {
-                pos.x = i;
-                pos.y = j;
-                break;
-            }
-        }
-    }
-    return pos;
 }
