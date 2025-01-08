@@ -4,11 +4,7 @@
 #include <string>
 #include <cctype> //isdigit()
 
-struct Equation {
-    long long int test_value;
-    std::vector<int> nums;
-};
-
+struct Equation { long long int test_value; std::vector<int> nums; };
 void read_equations(std::vector<Equation>&);
 bool eval_equation (Equation);
 void day7_part1();
@@ -52,7 +48,7 @@ bool eval_equation (Equation eq) {
 }
 
 void read_equations(std::vector<Equation>& vec) {
-    std::ifstream file("advent_day7.txt");
+    std::ifstream file("input.txt");
     if (!file) {
         std::cout << "File not found\n";
     }
