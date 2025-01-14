@@ -29,7 +29,7 @@ int main() {
 void day8_part1() {
     std::vector<Antenna> input_data;
     XY map_size;
-    if (read_data("advent_day8.txt", input_data, map_size)) {
+    if (read_data("input.txt", input_data, map_size)) {
         std::sort(input_data.begin(), input_data.end()); // sort by frequency
         std::map<char, int> freq_index {get_uniq_freq(input_data)};
         std::set<XY> antinodes {find_antinodes(input_data, map_size, freq_index)};
