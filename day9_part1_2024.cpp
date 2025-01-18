@@ -51,39 +51,29 @@ bool read_disk_map(const std::string& f_name, std::vector<std::string>& disk_map
 }
 
 bool is_number(const std::string& str) {
-    if (str != ".") {
-        return true;
-    }
+    if (str != ".") { return true; }
     return false;
 }
 
 void compact_file(std::vector<std::string>& disk_map) {
     auto it_1st_free = std::find(disk_map.begin(), disk_map.end(), ".");
     auto it_last_num = std::find_if(disk_map.rbegin(), disk_map.rend(), is_number);
-    auto distance = std::distance(disk_map.begin(), it_1st_free);
-    auto rdistance = std::distance(disk_map.rend(), it_last_num);
-    if (disk_map.size() >= 250) {
-        std::cout << "PROGRESS: ";
-    }
+    if (disk_map.size() >= 250) { std::cout << "PROGRESS: "; }
     int cnt {};
-    while (distance < abs(rdistance)){
+    while (it_1st_free < it_last_num.base()){
         std::iter_swap(it_1st_free, it_last_num);
         it_1st_free = std::find(disk_map.begin(), disk_map.end(), ".");
         it_last_num = std::find_if(disk_map.rbegin(), disk_map.rend(), is_number);
-        distance = std::distance(disk_map.begin(), it_1st_free);
-        rdistance = std::distance(disk_map.rend(), it_last_num);
-        if (++cnt%250 == 0) { // progress (it may take a while)
-            std::cout << '.';
-        }
+        if (++cnt%250 == 0) {
+                std::cout << '|';
+        } // progress bar (may take a while)
     }
 }
 
 long long int calc_checksum(const std::vector<std::string>& disk_map) {
     long long int result {};
     for (std::size_t i=0; i!=disk_map.size(); ++i) {
-        if (disk_map[i] == ".") {
-            break;
-        }
+        if (disk_map[i] == ".") { break; }
         result += i * std::stol(disk_map[i]);
     }
     return result;
