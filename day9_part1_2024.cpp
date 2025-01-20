@@ -21,7 +21,7 @@ void day9_part1() {
     std::vector<std::string> disk_map;
     if (read_disk_map("input.txt", disk_map)) {
         compact_file(disk_map);
-        std::cout << "\nThe resulting filesystem checksum: " << calc_checksum(disk_map);
+        std::cout << "The resulting filesystem checksum: " << calc_checksum(disk_map);
     }
 }
 
@@ -58,15 +58,10 @@ bool is_number(const std::string& str) {
 void compact_file(std::vector<std::string>& disk_map) {
     auto it_1st_free = std::find(disk_map.begin(), disk_map.end(), ".");
     auto it_last_num = std::find_if(disk_map.rbegin(), disk_map.rend(), is_number);
-    if (disk_map.size() >= 250) { std::cout << "PROGRESS: "; }
-    int cnt {};
     while (it_1st_free < it_last_num.base()){
         std::iter_swap(it_1st_free, it_last_num);
-        it_1st_free = std::find(disk_map.begin(), disk_map.end(), ".");
-        it_last_num = std::find_if(disk_map.rbegin(), disk_map.rend(), is_number);
-        if (++cnt%250 == 0) {
-                std::cout << '|';
-        } // progress bar (may take a while)
+        it_1st_free = std::find(it_1st_free, disk_map.end(), ".");
+        it_last_num = std::find_if(it_last_num, disk_map.rend(), is_number);
     }
 }
 
