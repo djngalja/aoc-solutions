@@ -21,7 +21,7 @@ int main() {
 
 void day11_part1() {
     std::vector<long long int> stones;
-    if (read_puzzle_input("advent_day11.txt", stones)) {
+    if (read_puzzle_input("input.txt", stones)) {
         for (int i=0; i<25; ++i) { blink(stones); }
         std::cout << stones.size() << " stones\n";
     }
