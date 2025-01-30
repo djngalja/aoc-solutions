@@ -1,3 +1,10 @@
+/*
+As compared to Part 1, the main algorithm remains unchanged. 
+After 25 blinks, only about 0.2% of all the stones had unique values. 
+As a result, all I had to do to solve Part 2 was to replace the stone vector with a map of stone numbers and their respective counts. I also added a couple of small utility functions.
+This solution completes in less than 1 second.
+*/
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -22,7 +29,6 @@ int main() {
 
 
 void day11_part2() {
-    // After 25 blinks, only 0.2% of all the stones had unique values!
     std::map<long long, long long> stones; // map of stones and their count
     if (read_puzzle_input("input.txt", stones)) {
         for (int i=0; i<75; ++i) { blink(stones); }
