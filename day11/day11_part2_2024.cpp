@@ -1,7 +1,8 @@
 /*
 As compared to Part 1, the main algorithm remains unchanged. 
 After 25 blinks, only about 0.2% of all the stones had unique values. 
-As a result, all I had to do to solve Part 2 was to replace the stone vector with a map of stone numbers and their respective counts. I also added a couple of small utility functions.
+As a result, all I had to do to solve Part 2 was to replace the stone vector with a map of stone numbers and their respective counts. 
+I also added a couple of small utility functions.
 This solution completes in less than 1 second.
 */
 
