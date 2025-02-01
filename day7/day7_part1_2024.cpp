@@ -4,9 +4,9 @@
 #include <string>
 #include <cctype> //isdigit()
 
-struct Equation { long long int test_value; std::vector<int> nums; };
-void read_equations(std::vector<Equation>&);
-bool eval_equation (Equation);
+std::vector<long long> split_str(const std::string&);
+bool read_equations(const std::string&, std::vector<std::vector<long long>>&);
+bool eval_equation (std::vector<long long>);
 void day7_part1();
 
 
@@ -16,67 +16,64 @@ int main() {
 }
 
 
-void day7_part1() {
-    std::vector<Equation> vec;
-    read_equations(vec);
-    long long int result {0};
-    for (auto eq : vec) {
-        if (eval_equation(eq)) {
-            result += eq.test_value;
+std::vector<long long> split_str(const std::string& str) {
+    std::vector<long long> temp_vec;
+    std::string temp_str;
+    for (char c : str) {
+        if (isdigit(c)) {
+            temp_str += c;
+        } else {
+            if (!temp_str.empty()) {
+                temp_vec.push_back(stoll(temp_str));
+                temp_str.clear();
+            }
         }
     }
-    std::cout << "Total calibration result: " << result;
+    temp_vec.push_back(stoll(temp_str));
+    return temp_vec;
 }
 
-bool eval_equation (Equation eq) {
-    while (eq.nums.size() > 1) {
-        if (eq.test_value%eq.nums.back() == 0) { //division possible
-            Equation new_eq {eq};
-            new_eq.test_value /= new_eq.nums.back();
-            new_eq.nums.pop_back();
+bool read_equations(const std::string& f_name, std::vector<std::vector<long long>>& equations) {
+    std::ifstream file(f_name);
+    if (!file) {
+        std::cout << "File <" << f_name << "> not found\n";
+        return false;
+    }
+    std::string temp_str;
+    while (getline(file, temp_str)) {
+        equations.push_back(split_str(temp_str));
+    }
+    return true;
+}
+
+bool eval_equation (std::vector<long long> eq) {
+    while (eq.size() > 2) {
+        if (eq[0]%eq.back() == 0) { // division is possible
+            std::vector<long long> new_eq {eq};
+            new_eq[0] /= new_eq.back();
+            new_eq.pop_back();
             if (eval_equation(new_eq)) {
                 return true;
             }
         }
-        eq.test_value -= eq.nums.back();
-        eq.nums.pop_back();
+        eq[0] -= eq.back();
+        eq.pop_back();
     }
-    if (eq.test_value == eq.nums[0]) {
+    if (eq[0] == eq[1]) {
         return true;
     }
     return false;
 }
 
-void read_equations(std::vector<Equation>& vec) {
-    std::ifstream file("input.txt");
-    if (!file) {
-        std::cout << "File not found\n";
-    }
-    std::string str;
-    while (getline(file, str)) {
-        std::size_t i {0};
-        std::string temp;
-        while (str[i] != ':') {
-            temp += str[i];
-            i++;
-        }
-        Equation e;
-        e.test_value = stoll(temp);
-        temp.clear();
-        std::vector<int> temp_v;
-        while (i != str.size()) {
-            if(isdigit(str[i])) {
-                temp += str[i];
-            } else {
-                if (!temp.empty()) {
-                    temp_v.push_back(stoi(temp));
-                    temp.clear();
-                }
+void day7_part1() {
+    std::vector<std::vector<long long>> equations;
+    if (read_equations("input.txt", equations)) {
+        long long result {};
+        for (const auto& eq : equations) {
+            if (eval_equation(eq)) {
+                result += eq[0]; // the 1st element is test value
             }
-            i++;
         }
-        temp_v.push_back(stoi(temp));
-        e.nums = temp_v;
-        vec.push_back(e);
+        std::cout << "Total calibration result: " << result << '\n';
     }
 }
