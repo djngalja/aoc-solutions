@@ -1,22 +1,22 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <set>
 #include <tuple>
 
-struct Position { int x; int y; };
-bool operator<(const Position& p1, const Position& p2);
+struct XY { int x; int y; };
+bool operator<(const XY&, const XY&);
+struct PosDir { XY pos; XY dir; }; // position & direction
+bool operator<(const PosDir&, const PosDir&);
 
-void day6_part2();
+void turn_right(XY&);
+bool within_bounds(const std::vector<std::vector<char>>&, const XY&, const XY&);
+std::set<XY> find_unique_pos(const XY&, const std::vector<std::vector<char>>&);
+int cnt_loops(const XY&, std::vector<std::vector<char>>&);
+XY find_guard(const std::vector<std::vector<char>>&);
 bool read_map(const std::string&, std::vector<std::vector<char>>&);
-Position find_guard(const std::vector<std::vector<char>>&);
-void turn_right(Position&);
-void move_guard(const Position&, const std::vector<std::vector<char>>&, std::set<Position>&);
-bool is_loop(const std::vector<int>&, const std::vector<std::vector<int>>&);
-int place_obstacles(const Position&, const std::set<Position>&, std::vector<std::vector<char>>&);
-bool move_guard(const Position&, const std::vector<std::vector<char>>&);
+void day6_part2();
 
 
 int main() {
@@ -28,22 +28,16 @@ int main() {
 void day6_part2() {
     std::vector<std::vector<char>> vec;
     if (read_map("input.txt", vec)) {
-        const Position guard_init_pos = find_guard(vec);
-        std::set<Position> visited;
-        move_guard(guard_init_pos, vec, visited);
-        const int obstacles = place_obstacles(guard_init_pos, visited, vec);
-        std::cout << "\nThere are " << obstacles << " different positions.\n";
+        const XY init_pos = {find_guard(vec)};
+        int loop_cnt = cnt_loops(init_pos, vec);
+        std::cout << "\nThere are " << loop_cnt << " different positions.\n";
     }
-}
-
-bool operator<(const Position& p1, const Position& p2) {
-    return std::tie(p1.x, p1.y) < std::tie(p2.x, p2.y);
 }
 
 bool read_map(const std::string& f_name, std::vector<std::vector<char>>& vec) {
     std::ifstream file(f_name);
     if (!file) {
-        std::cout << "File not found\n";
+        std::cout << "File <" << f_name << "> not found\n";
         return false;
     }
     std::string temp_str;
@@ -57,95 +51,96 @@ bool read_map(const std::string& f_name, std::vector<std::vector<char>>& vec) {
     return true;
 }
 
-Position find_guard(const std::vector<std::vector<char>>& vec) {
-    Position pos {0, 0};
+XY find_guard(const std::vector<std::vector<char>>& vec) {
+    XY init_pos {};
     for (std::size_t i=0; i!=vec.size(); ++i) {
         for (std::size_t j=0; j!=vec[i].size(); ++j) {
             if (vec[i][j] == '^') {
-                pos.x = i;
-                pos.y = j;
+                init_pos.x = i;
+                init_pos.y = j;
                 break;
             }
         }
     }
-    return pos;
+    return init_pos;
 }
 
-void turn_right(Position& adj) {
-    if (adj.x == -1) { // >East
-        adj = {0, 1};
-    } else if (adj.x == 1) { // >West
-        adj = {0, -1};
-    } else {
-        if (adj.y == 1) { // >South
-            adj = {1, 0};
-        } else { // >North
-            adj = {-1, 0};
+int cnt_loops(const XY& init_pos, std::vector<std::vector<char>>& vec) {
+    int cnt {};
+    std::set<XY> unique_pos = {find_unique_pos(init_pos, vec)};
+    for (const auto& u_pos : unique_pos) {
+        XY pos {init_pos};
+        XY dir {-1, 0}; // North
+        if (vec[u_pos.x][u_pos.y] == '.') {
+            vec[u_pos.x][u_pos.y] = '#';
+            std::set<PosDir> new_path;
+            while (within_bounds(vec, pos, dir)) {
+                if (vec[pos.x + dir.x][pos.y + dir.y] == '#') {
+                    turn_right(dir);
+                }
+                if (vec[pos.x + dir.x][pos.y + dir.y] != '#') {
+                    pos.x += dir.x;
+                    pos.y += dir.y;
+                    auto result = new_path.insert({pos.x, pos.y, dir.x, dir.y});
+                    if (result.second == false) { // couldn't insert -> it's a loop
+                        if (++cnt%5==0) {
+                            std:: cout << "Progress: " << cnt << " loops found\n";
+                        }
+                        break;
+                    }
+                }
+            }
+            vec[u_pos.x][u_pos.y] = '.'; //return to the original state
         }
     }
+    return cnt;
 }
 
-//the initial path
-void move_guard(const Position& guard_init_pos, const std::vector<std::vector<char>>& vec, std::set<Position>& visited) {
+std::set<XY> find_unique_pos(const XY& init_pos, const std::vector<std::vector<char>>& vec) {
+    std::set<XY> unique_pos;
+    XY dir {-1, 0}; // North
+    XY pos {init_pos};
+    while (within_bounds(vec, pos, dir)) {
+        if (vec[pos.x + dir.x][pos.y + dir.y] == '#') {
+            turn_right(dir);
+        }
+        if (vec[pos.x + dir.x][pos.y + dir.y] != '#') {
+            pos.x += dir.x;
+            pos.y += dir.y;
+            unique_pos.insert(pos);
+        }
+    }
+    return unique_pos;
+}
+
+bool within_bounds(const std::vector<std::vector<char>>& vec, const XY& pos, const XY& dir) {
     int x_max = vec.size();
     int y_max = vec[0].size();
-    Position adj {-1, 0}; // >North
-    Position pos {guard_init_pos};
-    while ((pos.x + adj.x >= 0) && (pos.x + adj.x < x_max) &&
-           (pos.y + adj.y >= 0) && (pos.y + adj.y < y_max)) {
-        if (vec[pos.x + adj.x][pos.y + adj.y] == '#') {
-            turn_right(adj);
+    if ((pos.x + dir.x >= 0) && (pos.x + dir.x < x_max) &&
+        (pos.y + dir.y >= 0) && (pos.y + dir.y < y_max)) {
+            return true;
         }
-        if (vec[pos.x + adj.x][pos.y + adj.y] != '#') {
-            pos.x += adj.x;
-            pos.y += adj.y;
-            visited.insert(pos);
-        }
-    }
-}
-
-bool is_loop(const std::vector<int>& data, const std::vector<std::vector<int>>& data_vec) {
-    auto it = std::find(data_vec.begin(), data_vec.end(), data);
-    return it != data_vec.end() ? true : false;
-}
-
-int place_obstacles(const Position& guard_init_pos,
-                    const std::set<Position>& visited,
-                    std::vector<std::vector<char>>& vec
-                    ) {
-    int cnt_loops {0};
-    for (const auto& pos : visited) {
-        if (vec[pos.x][pos.y] == '.') {
-            vec[pos.x][pos.y] = '#';
-            if (move_guard(guard_init_pos, vec)) {
-                std:: cout << "PROGRESS: " << ++cnt_loops << " loop(s) found\n";
-            }
-            vec[pos.x][pos.y] = '.'; //return to the original state
-        }
-    }
-    return cnt_loops;
-}
-
-bool move_guard(const Position& guard_init_pos, const std::vector<std::vector<char>>& vec) {
-    int x_max = vec.size();
-    int y_max = vec[0].size();
-    Position pos {guard_init_pos};
-    Position adj {-1, 0}; // >North
-    std::vector<std::vector<int>> data_vec;
-    while ((pos.x + adj.x >= 0) && (pos.x + adj.x < x_max) &&
-           (pos.y + adj.y >= 0) && (pos.y + adj.y < y_max)) {
-        if (vec[pos.x + adj.x][pos.y + adj.y] == '#') {
-            turn_right(adj);
-        }
-        if (vec[pos.x + adj.x][pos.y + adj.y] != '#') {
-            pos.x += adj.x;
-            pos.y += adj.y;
-            std::vector<int> data {pos.x, pos.y, adj.x, adj.y};
-            if (is_loop(data, data_vec)) {
-                return true;
-            }
-            data_vec.push_back(data);
-        }
-    }
     return false;
+}
+
+void turn_right(XY& dir) {
+    if (dir.x == -1) { // East
+        dir = {0, 1};
+    } else if (dir.x == 1) { // West
+        dir = {0, -1};
+    } else {
+        if (dir.y == 1) { // South
+            dir = {1, 0};
+        } else { // North
+            dir = {-1, 0};
+        }
+    }
+}
+
+bool operator<(const PosDir& l, const PosDir& r) {
+    return std::tie(l.pos, l.dir) < std::tie(r.pos, r.dir);
+}
+
+bool operator<(const XY& l, const XY& r) {
+    return std::tie(l.x, l.y) < std::tie(r.x, r.y);
 }
