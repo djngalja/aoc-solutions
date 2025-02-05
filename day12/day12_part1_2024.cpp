@@ -22,7 +22,7 @@ int main() {
 
 void day12_part1() {
     std::vector<std::vector<Plot>> garden_map;
-    if (read_input("day12.txt", garden_map)) {
+    if (read_input("input.txt", garden_map)) {
         const std::vector<std::vector<int>> regions = find_regions(garden_map);
         int ttl_price {};
         for (const auto& region : regions) {
