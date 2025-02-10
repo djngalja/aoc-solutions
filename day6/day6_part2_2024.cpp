@@ -1,3 +1,10 @@
+/*
+In Part 2, I placed obstacles at every position visited in Part 1.
+Each time, the guard's route is saved into a std::set. 
+Each Key is the combination of x, y and the direction (up, down, left, right) for every single step.
+If a step cannot be saved into the std::set (check the return value of std::set::insert), this means that the key already exists, thus we found a loop.
+*/
+
 #include <fstream>
 #include <iostream>
 #include <vector>
