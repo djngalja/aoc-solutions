@@ -36,7 +36,7 @@ void day13_part1() {
 bool read_input(const std::string& f_name, std::vector<std::vector<int>>& input) {
     std::ifstream file(f_name);
     if(!file) {
-        std::cout << "File <" << f_name << " not found\n";
+        std::cout << "File <" << f_name << "> not found\n";
         return false;
     }
     std::string temp_str;
