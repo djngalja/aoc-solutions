@@ -54,7 +54,7 @@ std::vector<std::vector<char>> get_wh_map(std::ifstream& file) {
     std::vector<std::vector<char>> wh_map;
     std::string temp_str;
     while (getline(file, temp_str)) {
-        if (temp_str.empty()) { return wh_map; }
+        if (temp_str.empty()) { break; }
         std::vector<char> temp_vec;
         for (char c : temp_str) {
             if (c == '#' || c == '.') {
