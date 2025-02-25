@@ -6,13 +6,12 @@
 struct XY { int x; int y; };
 
 int calc_gps(const std::vector<std::vector<char>>&);
-bool movable(const XY&, const XY&, std::vector<std::vector<char>>&);
-void move_robot(const XY&, XY&, std::vector<std::vector<char>>&);
-void update_map(const std::vector<char>&, XY&, std::vector<std::vector<char>>&);
-bool get_init_pos(std::vector<std::vector<char>>&, XY&);
-void get_movs(std::ifstream&, std::vector<char>&);
-void get_wh_map(std::ifstream&, std::vector<std::vector<char>>&);
-bool read_input(const std::string&, std::vector<std::vector<char>>&, std::vector<char>&);
+bool move_boxes(const XY&, const XY&, std::vector<std::vector<char>>&);
+void update_map(const std::vector<XY>&, XY&, std::vector<std::vector<char>>&);
+bool find_init_pos(std::vector<std::vector<char>>&, XY&);
+std::vector<XY> get_directions(std::ifstream&);
+std::vector<std::vector<char>> get_wh_map(std::ifstream&);
+bool read_input(const std::string&, std::vector<std::vector<char>>&, std::vector<XY>&);
 void day15_part1();
 
 
@@ -24,51 +23,66 @@ int main() {
 
 void day15_part1() {
     std::vector<std::vector<char>> wh_map;
-    std::vector<char> mov;
-    if (read_input("input.txt", wh_map, mov)) {
+    std::vector<XY> directions;
+    if (read_input("input.txt", wh_map, directions)) {
         XY init_pos {};
-        if (get_init_pos(wh_map, init_pos)) {
-            update_map(mov, init_pos, wh_map);
+        if (find_init_pos(wh_map, init_pos)) {
+            update_map(directions, init_pos, wh_map);
             std::cout << "The sum of all GPS coordinates: " << calc_gps(wh_map) << ".\n";
         }
     }
 }
 
-bool read_input(const std::string& f_name, std::vector<std::vector<char>>& wh_map, std::vector<char>& mov) {
+bool read_input(const std::string& f_name, std::vector<std::vector<char>>& wh_map, std::vector<XY>& directions) {
     std::ifstream file(f_name);
     if (!file) {
         std::cout << "File <" << f_name << "> not found.\n";
         return false;
     }
-    get_wh_map(file, wh_map);
-    get_movs(file, mov);
+    wh_map = get_wh_map(file);
+    directions = get_directions(file);
     return true;
 }
 
-void get_wh_map(std::ifstream& file, std::vector<std::vector<char>>& wh_map) {
+std::vector<std::vector<char>> get_wh_map(std::ifstream& file) {
+    std::vector<std::vector<char>> wh_map;
     std::string temp_str;
     while (getline(file, temp_str)) {
-        if (temp_str.empty()) { return; }
+        if (temp_str.empty()) { break; }
         std::vector<char> temp_vec;
         for (char c : temp_str) {
             temp_vec.push_back(c);
         }
         wh_map.push_back(temp_vec);
     }
+    return wh_map;
 }
 
-void get_movs(std::ifstream& file, std::vector<char>& mov) {
+std::vector<XY> get_directions(std::ifstream& file) {
+    std::vector<XY> directions;
     std::string temp_str;
     while (getline(file, temp_str)) {
         if (temp_str[0] == 'v' || temp_str[0] == '>' || temp_str[0] == '<' || temp_str[0] == '^') {
             for (char c : temp_str) {
-                mov.push_back(c);
+                if (c == '>') {
+                    directions.push_back(XY{0, 1});
+                }
+                else if (c == 'v') {
+                    directions.push_back(XY{1, 0});
+                }
+                else if (c == '<') {
+                    directions.push_back(XY{0, -1});
+                }
+                else {
+                    directions.push_back(XY{-1, 0});
+                }
             }
         }
     }
+    return directions;
 }
 
-bool get_init_pos(std::vector<std::vector<char>>& wh_map, XY& init_pos) {
+bool find_init_pos(std::vector<std::vector<char>>& wh_map, XY& init_pos) {
     for (std::size_t i=0; i<wh_map.size(); ++i) {
         for (std::size_t j=0; j<wh_map[i].size(); ++j) {
             if (wh_map[i][j] == '@') {
@@ -82,44 +96,24 @@ bool get_init_pos(std::vector<std::vector<char>>& wh_map, XY& init_pos) {
     return false;
 }
 
-void update_map(const std::vector<char>& mov, XY& init_pos, std::vector<std::vector<char>>& wh_map) {
-    const std::vector<XY> dir = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} }; // 4 directions
-    for (char c : mov) {
-        if (c == '>') {
-            move_robot(dir[0], init_pos, wh_map);
-        }
-        else if (c == 'v') {
-            move_robot(dir[1], init_pos, wh_map);
-        }
-        else if (c == '<') {
-            move_robot(dir[2], init_pos, wh_map);
-        }
-        else {
-            move_robot(dir[3], init_pos, wh_map);
-        }
-    }
-}
-
-void move_robot(const XY& dir, XY& init_pos, std::vector<std::vector<char>>& wh_map) {
-    int x = init_pos.x + dir.x;
-    int y = init_pos.y + dir.y;
-    if (wh_map[x][y] == '#') { return; }
-    if (wh_map[x][y] == '.') {
-        init_pos.x += dir.x;
-        init_pos.y += dir.y;
-        return;
-    }
-    if (wh_map[x][y] == 'O') {
-        if (movable(dir, {x, y}, wh_map)) {
-            wh_map[x][y] = '.'; // Remove the 1st box only
+void update_map(const std::vector<XY>& directions, XY& init_pos, std::vector<std::vector<char>>& wh_map) {
+    for (const auto& dir : directions) {
+        int x = init_pos.x + dir.x;
+        int y = init_pos.y + dir.y;
+        if (wh_map[x][y] == '.') {
             init_pos.x += dir.x;
             init_pos.y += dir.y;
-            return;
+        }
+        if (wh_map[x][y] == 'O') {
+            if (move_boxes(dir, XY{x, y}, wh_map)) {
+                init_pos.x += dir.x;
+                init_pos.y += dir.y;
+            }
         }
     }
 }
 
-bool movable(const XY& dir, const XY& pos, std::vector<std::vector<char>>& wh_map) {
+bool move_boxes(const XY& dir, const XY& pos, std::vector<std::vector<char>>& wh_map) {
     int x = pos.x + dir.x;
     int y = pos.y + dir.y;
     while (wh_map[x][y] == 'O') {
@@ -127,6 +121,7 @@ bool movable(const XY& dir, const XY& pos, std::vector<std::vector<char>>& wh_ma
         y += dir.y;
     }
     if (wh_map[x][y] == '.') {
+        wh_map[pos.x][pos.y] = '.'; // Remove the 1st box
         wh_map[x][y] = 'O'; // Place a new box after the last one
         return true;
     }
