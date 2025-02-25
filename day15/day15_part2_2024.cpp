@@ -14,7 +14,7 @@ bool movable_up_down(const XY&, const XY&, const std::vector<std::vector<char>>&
 void move_left_right(const XY&, const XY&, std::vector<std::vector<char>>&);
 bool movable_left_right(const XY&, const XY&, const std::vector<std::vector<char>>&);
 void update_map(const std::vector<XY>&, XY&, std::vector<std::vector<char>>&);
-bool get_init_pos(std::vector<std::vector<char>>&, XY&);
+bool find_init_pos(std::vector<std::vector<char>>&, XY&);
 std::vector<XY> get_directions(std::ifstream&);
 std::vector<std::vector<char>> get_wh_map(std::ifstream&);
 bool read_input(const std::string&, std::vector<std::vector<char>>&, std::vector<XY>&);
@@ -32,7 +32,7 @@ void day15_part2() {
     std::vector<XY> directions;
     if (read_input("input.txt", wh_map, directions)) {
         XY init_pos {};
-        if (get_init_pos(wh_map, init_pos)) {
+        if (find_init_pos(wh_map, init_pos)) {
             update_map(directions, init_pos, wh_map);
             std::cout << "The sum of all GPS coordinates: " << calc_gps(wh_map) << ".\n";
         }
@@ -99,7 +99,7 @@ std::vector<XY> get_directions(std::ifstream& file) {
     return directions;
 }
 
-bool get_init_pos(std::vector<std::vector<char>>& wh_map, XY& init_pos) {
+bool find_init_pos(std::vector<std::vector<char>>& wh_map, XY& init_pos) {
     for (std::size_t i=0; i<wh_map.size(); ++i) {
         for (std::size_t j=0; j<wh_map[i].size(); ++j) {
             if (wh_map[i][j] == '@') {
