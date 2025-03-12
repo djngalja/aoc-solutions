@@ -4,6 +4,8 @@ My solutions for **Advent of Code 2024**, solved in **C++**, no AI tools used.
 
 | Day   | Part 1  |  Part 2 |
 |-------|---|---|
+| Day 1 | ✔️ | ✔️ |
+| ... | ... | ... |
 | Day 6 | ✔️ | ✔️ |
 | Day 7 | ✔️ | ✔️ |
 | Day 8 | ✔️ | ✔️ |
