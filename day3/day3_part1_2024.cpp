@@ -25,8 +25,8 @@ std::pair<int, bool> read_file(const std::string& f_name) {
     }
     int result {};
     std::regex pat {R"(mul\((\d+),(\d+)\))"};
-    for (std::string line; getline(file, line);) {
-        for (std::sregex_iterator p(line.begin(), line.end(), pat); p!=std::sregex_iterator{}; ++p) {
+    for (std::string str; getline(file, str);) {
+        for (std::sregex_iterator p(str.begin(), str.end(), pat); p!=std::sregex_iterator{}; ++p) {
             result += stoi((*p)[1]) * stoi((*p)[2]);
         }
     }
