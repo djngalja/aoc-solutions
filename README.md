@@ -6,6 +6,7 @@ My solutions for **Advent of Code 2024**, solved in **C++**, no AI tools used.
 |-------|---|---|
 | Day 1 | ✔️ | ✔️ |
 | Day 2 | ✔️ | ✔️ |
+| Day 3 | ✔️ | ✔️ |
 | ... | ... | ... |
 | Day 6 | ✔️ | ✔️ |
 | Day 7 | ✔️ | ✔️ |
