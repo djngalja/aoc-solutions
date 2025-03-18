@@ -38,10 +38,10 @@ bool read_file(const std::string& f_name, std::vector<std::vector<char>>& matrix
 
 int calc_result(const std::vector<std::vector<char>>& matrix) {
     int result {};
-    int x_max = matrix.size();
-    int y_max = matrix[0].size();
-    for (int i = 0; i != x_max; ++i) {
-        for (int j = 0; j != y_max; ++j) {
+    int x_max = matrix.size() - 1;
+    int y_max = matrix[0].size() - 1;
+    for (int i = 1; i != x_max; ++i) {
+        for (int j = 1; j != y_max; ++j) {
             if (matrix[i][j] == 'A') {
                 result += cnt_x_mas(matrix, XY{i, j});
             }
@@ -51,14 +51,8 @@ int calc_result(const std::vector<std::vector<char>>& matrix) {
 }
 
 int cnt_x_mas(const std::vector<std::vector<char>>& matrix, const XY& a_pos) {
-    int cnt {};
-    int x_max = matrix.size();
-    int y_max = matrix[0].size();
-    if ((a_pos.x - 1 < 0) || (a_pos.y - 1 < 0)
-        || (a_pos.x + 1 >= x_max) || (a_pos.y + 1 >= y_max)) {
-                return cnt;
-        }
     std::vector<XY> dir = { {-1, -1}, {-1, 1}, {1, 1}, {1, -1} };
+    int cnt {};
     for (int i = 0; i < 4; ++i) {
         std::rotate(dir.begin(), dir.begin() + 1, dir.end());
         if ((matrix[a_pos.x + dir[0].x][a_pos.y + dir[0].y] == 'M')
