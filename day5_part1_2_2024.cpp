@@ -10,8 +10,8 @@ std::pair<int, int> sum_mid_nums(std::vector<std::vector<int>>&, const std::mult
 bool read_input(const std::string&, std::multimap<int, int>&, std::vector<std::vector<int>>&);
 
 class Compare {
-public:
     std::multimap<int, int> rules;
+public:
     Compare(const std::multimap<int, int>& r) : rules {r} {}
     bool operator()(int, int);
 };
