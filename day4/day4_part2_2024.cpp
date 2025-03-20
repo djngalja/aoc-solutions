@@ -51,14 +51,14 @@ int calc_result(const std::vector<std::vector<char>>& matrix) {
 }
 
 int cnt_x_mas(const std::vector<std::vector<char>>& matrix, const XY& a_pos) {
-    std::vector<XY> dir = { {-1, -1}, {-1, 1}, {1, 1}, {1, -1} };
+    std::vector<char> ch = {'M', 'M', 'S', 'S'};
     int cnt {};
     for (int i = 0; i < 4; ++i) {
-        std::rotate(dir.begin(), dir.begin() + 1, dir.end());
-        if ((matrix[a_pos.x + dir[0].x][a_pos.y + dir[0].y] == 'M')
-            && (matrix[a_pos.x + dir[1].x][a_pos.y + dir[1].y] == 'M')
-            && (matrix[a_pos.x + dir[2].x][a_pos.y + dir[2].y] == 'S')
-            && (matrix[a_pos.x + dir[3].x][a_pos.y + dir[3].y] == 'S')) {
+        std::rotate(ch.begin(), ch.begin() + 1, ch.end());
+        if ((matrix[a_pos.x - 1][a_pos.y - 1] == ch[0])
+            && (matrix[a_pos.x - 1][a_pos.y + 1] == ch[1])
+            && (matrix[a_pos.x + 1][a_pos.y + 1] == ch[2])
+            && (matrix[a_pos.x + 1][a_pos.y - 1] == ch[3])) {
                 cnt++;
             }
     }
