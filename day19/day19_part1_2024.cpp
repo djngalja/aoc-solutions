@@ -15,9 +15,9 @@ int main() {
     std::vector<std::string> designs;
     if (read_input("input.txt", patterns, designs)) {
         int cnt {};
-        std::map<std::string, bool> cache;
+        std::map<std::string, bool> memo;
         for (const auto& design : designs) {
-            if (is_possible(patterns, design, cache)) {
+            if (is_possible(patterns, design, memo)) {
                 cnt++;
             }
         }
@@ -27,24 +27,18 @@ int main() {
 }
 
 
-bool is_possible(const std::set<std::string>& patterns, const std::string& design, std::map<std::string, bool>& cache) {
-    if (auto res = cache.find(design); res != cache.end()) {
-        return res -> second;
-    }
-    if (patterns.find(design) != patterns.end()) {
-        cache[design] = true;
-        return true;
-    }
-    for (std::size_t i = 1; i < design.size(); ++i) {
-        if (!is_possible(patterns, design.substr(0, i), cache)) {
-            continue;
-        }
-        if (is_possible(patterns, design.substr(i, design.size() - i), cache)) {
-            cache[design] = true;
+bool is_possible(const std::set<std::string>& patterns, const std::string& design, std::map<std::string, bool>& memo) {
+    if (design.empty()) { return true; }
+    if (memo.find(design) != memo.end()) { return memo[design]; }
+    for (const auto& pat : patterns) {
+        if (design.find(pat) != 0) { continue; }
+        std::string new_design = design.substr(pat.size());
+        if (is_possible(patterns, new_design, memo)) {
+            memo[design] = true;
             return true;
         }
     }
-    cache[design] = false;
+    memo[design] = false;
     return false;
 }
 
