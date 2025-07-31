@@ -24,5 +24,6 @@ My solutions for **Advent of Code 2024**, solved in **C++**, no AI tools used.
 | Day 18 | ✔️ | ✔️ |
 | Day 19 | ✔️ | ✔️ |
 |        |    |    |
+| Day 23 | ✔️ |    |
 | Day 24 | ✔️ |    |
 | Day 25 | ✔️ |    |
