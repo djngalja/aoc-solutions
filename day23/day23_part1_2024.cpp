@@ -6,8 +6,6 @@
 #include <vector>
 #include <algorithm>
 
-void add_pair(const std::string&, const std::string&,
-    std::unordered_map<std::string, std::vector<std::string>>&);
 bool read_file(const std::string&, 
     std::unordered_map<std::string, std::vector<std::string>>&);
 void find_inter_connect(const std::unordered_map<std::string, std::vector<std::string>>&, 
@@ -26,16 +24,6 @@ int main() {
 }
 
 
-void add_pair(const std::string& first, const std::string& second,
-std::unordered_map<std::string, std::vector<std::string>>& input) {
-    if (input.find(first) == input.end()) {
-        std::vector<std::string> temp {second};
-        input[first] = temp;
-    } else {
-        input[first].push_back(second);
-    }
-}
-
 bool read_file(const std::string& f_name, std::unordered_map<std::string, std::vector<std::string>>& input) {
     std::ifstream file(f_name);
     if (!file) {
@@ -45,8 +33,8 @@ bool read_file(const std::string& f_name, std::unordered_map<std::string, std::v
     for (std::string str; file >> str; ) {
         std::string first = str.substr(0, 2);
         std::string second = str.substr(3);
-        add_pair(first, second, input);
-        add_pair(second, first, input);
+        input[first].push_back(second);
+        input[second].push_back(first);
     }
     return true;
 }
