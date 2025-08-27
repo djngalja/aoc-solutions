@@ -23,8 +23,8 @@ bool operator<(const PosDir&, const PosDir&);
 
 bool read_input(const std::string&, XY&, XY&, std::vector<std::string>&);
 size_t cnt_tiles(const XY&, const XY&, const std::vector<std::string>&);
-Tile get_new_tile(const std::vector<std::string>&, const Tile&, 
-    std::map<PosDir, int>&, XY = {});
+Tile get_new_tile(const std::vector<std::string>&, std::map<PosDir, int>&, 
+    int, const XY&, const std::vector<XY>&);
 XY rotate90(const XY&, bool);
 
 
@@ -84,12 +84,13 @@ const std::vector<std::string>& input) {
             continue;
         }
         pq.pop();
-        Tile new_tile = get_new_tile(input, tile, visited);
+        Tile new_tile = get_new_tile(input, visited, tile.score, tile.dir, tile.path);
         if (new_tile.score) {
             pq.push(new_tile);
         }
         for (bool cw : {true, false}) {
-            Tile rotated_tile = get_new_tile(input, tile, visited, rotate90(tile.dir, cw));
+            Tile rotated_tile = get_new_tile(
+                input, visited, tile.score + 1000, rotate90(tile.dir, cw), tile.path);
             if (rotated_tile.score) {
                 pq.push(rotated_tile);
             }
@@ -98,29 +99,18 @@ const std::vector<std::string>& input) {
     return best_spots.size();
 }
 
-Tile get_new_tile(const std::vector<std::string>& input, const Tile& tile, 
-std::map<PosDir, int>& visited, XY rotated_dir) {
-    bool rotate = rotated_dir.x == 0 && rotated_dir.y == 0 ? false : true;
-    int new_score;
-    XY new_dir;
-    XY new_pos;
-    if (rotate) {
-        new_score = tile.score + 1001;
-        new_dir = rotated_dir;
-        new_pos = tile.path.back() + new_dir;
-    } else {
-        new_score = tile.score + 1;
-        new_dir = tile.dir;
-        new_pos = tile.path.back() + tile.dir;
-    }
+Tile get_new_tile(const std::vector<std::string>& input, 
+std::map<PosDir, int>& visited, int score, const XY& dir, const std::vector<XY>& path) {
+    XY new_pos {path.back() + dir};
     if (input[new_pos.x][new_pos.y] != '#') {
-        PosDir pos_dir {new_pos, new_dir};
+        PosDir pos_dir {new_pos, dir};
         bool is_found = visited.find(pos_dir) != visited.end();
-        if (!(is_found && visited[pos_dir] < new_score)) {
-            visited[pos_dir] = new_score;
-            std::vector<XY> new_path(tile.path);
+        ++score;
+        if (!(is_found && visited[pos_dir] < score)) {
+            visited[pos_dir] = score;
+            std::vector<XY> new_path(path);
             new_path.push_back(new_pos);
-            return Tile{new_score, new_dir, new_path};
+            return Tile{score, dir, new_path};
         }
     }
     return Tile{};
