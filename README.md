@@ -19,11 +19,12 @@ My solutions for **Advent of Code 2024**, solved in **C++**, no AI tools used.
 | Day 13 | ✔️ | ✔️ |
 | Day 14 | ✔️ | ✔️ |
 | Day 15 | ✔️ | ✔️ |
-| Day 16 | ✔️ |    |
+| Day 16 | ✔️ | ✔️ :new:|
 | Day 17 | ✔️ |    |
 | Day 18 | ✔️ | ✔️ |
 | Day 19 | ✔️ | ✔️ |
-|        |    |    |
+| Day 20 |    |    |
+| Day 21 |    |    |
 | Day 22 | ✔️ | ✔️ |
 | Day 23 | ✔️ | ✔️ |
 | Day 24 | ✔️ |    |
