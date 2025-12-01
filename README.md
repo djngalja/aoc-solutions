@@ -17,7 +17,7 @@ My solutions for **Advent of Code**, solved in **C++11**.
     </tr>
   </thead>
   <tbody>
-    <tr><td>Day 1</td><td>✔️</td><td>✔️</td><td>✔️</td><td></td></tr>
+    <tr><td>Day 1</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td></tr>
     <tr><td>Day 2</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
     <tr><td>Day 3</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
     <tr><td>Day 4</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
@@ -32,7 +32,7 @@ My solutions for **Advent of Code**, solved in **C++11**.
     <tr><td>Day 13</td><td>✔️</td><td>✔️</td><td colspan="2"></td></tr>
     <tr><td>Day 14</td><td>✔️</td><td>✔️</td><td colspan="2"></td></tr>
     <tr><td>Day 15</td><td>✔️</td><td>✔️</td><td colspan="2"></td></tr>
-    <tr><td>Day 16</td><td>✔️</td><td>✔️ :new:</td><td colspan="2"></td></tr>
+    <tr><td>Day 16</td><td>✔️</td><td>✔️</td><td colspan="2"></td></tr>
     <tr><td>Day 17</td><td>✔️</td><td></td><td colspan="2"></td></tr>
     <tr><td>Day 18</td><td>✔️</td><td>✔️</td><td colspan="2"></td></tr>
     <tr><td>Day 19</td><td>✔️</td><td>✔️</td><td colspan="2"></td></tr>
