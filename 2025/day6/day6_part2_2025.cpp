@@ -28,9 +28,9 @@ int main() {
         std::vector<std::vector<long>> final_numbers(operators.size());
         for (int j = numbers[0].size() - 1; j >= 0; --j) {
             std::string num{};
-            for (size_t k = 0; k < numbers.size(); ++k) {
-                if (numbers[k][j] != ' ') {
-                    num += numbers[k][j];
+            for (size_t i = 0; i < numbers.size(); ++i) {
+                if (numbers[i][j] != ' ') {
+                    num += numbers[i][j];
                 }
             }
             if (num.empty()) { 
