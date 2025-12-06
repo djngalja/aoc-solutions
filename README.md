@@ -1,4 +1,4 @@
-# Advent of Code
+![banner](banner_a0c_25.jpeg)
 My solutions for **Advent of Code**, solved in **C++11**.
 <br>The challenge descriptions and inputs can be found at [Advent of Code](https://adventofcode.com/).
 <table>
@@ -22,7 +22,7 @@ My solutions for **Advent of Code**, solved in **C++11**.
     <tr><td>Day 3</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td></tr>
     <tr><td>Day 4</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td></tr>
     <tr><td>Day 5</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td></tr>
-    <tr><td>Day 6</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
+    <tr><td>Day 6</td><td>✔️</td><td>✔️</td><td>✔️</td><td></td></tr>
     <tr><td>Day 7</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
     <tr><td>Day 8</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
     <tr><td>Day 9</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
