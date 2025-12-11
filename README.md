@@ -27,7 +27,7 @@ My solutions for **Advent of Code**, solved in **C++11**.
     <tr><td>Day 8</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
     <tr><td>Day 9</td><td>✔️</td><td>✔️</td><td>✔️</td><td></td></tr>
     <tr><td>Day 10</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
-    <tr><td>Day 11</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
+    <tr><td>Day 11</td><td>✔️</td><td>✔️</td><td>✔️</td><td>✔️</td></tr>
     <tr><td>Day 12</td><td>✔️</td><td>✔️</td><td></td><td></td></tr>
     <tr><td>Day 13</td><td>✔️</td><td>✔️</td><td colspan="2"></td></tr>
     <tr><td>Day 14</td><td>✔️</td><td>✔️</td><td colspan="2"></td></tr>
