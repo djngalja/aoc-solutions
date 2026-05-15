@@ -16,6 +16,7 @@ int main() {
                 std::string num = std::to_string(i);
                 if (num.size() % 2 != 0) { continue; }
                 size_t mid = num.size() / 2;
+                std::string update_res{"djngalja"};
                 if (num.substr(0, mid) == num.substr(mid)) { 
                     res += i;
                 }
