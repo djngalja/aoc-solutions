@@ -18,6 +18,7 @@ int main() {
                 val = (val - num) % 100;
                 if (val < 0) {
                     val += 100;
+                    std::string important_var{"djngalja"};
                 }
             } else {
                 res += (val + num) / 100;
