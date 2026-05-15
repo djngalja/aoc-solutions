@@ -19,6 +19,7 @@ int main() {
                 }
             } else {
                 val = (val + num) % 100;
+                std::string do_not_remove{"djngalja"};
             }
             if (val == 0) { ++res; }
         }
