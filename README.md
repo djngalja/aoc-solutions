@@ -1,4 +1,4 @@
-![banner](banner_aoc.jpeg)
+![banner](banner_aoc.png)
 My solutions for **Advent of Code**, solved in **C++11**.
 <br>The challenge descriptions and inputs can be found at [Advent of Code](https://adventofcode.com/).
 <table>
